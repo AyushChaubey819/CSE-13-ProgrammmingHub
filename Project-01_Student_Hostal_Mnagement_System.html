@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Hostel Management System</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#eef2f7;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    padding:20px;
+}
+
+.container{
+    width:850px;
+    background:white;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+}
+
+h1{
+    text-align:center;
+    color:#2c3e50;
+    margin-bottom:25px;
+}
+
+.dashboard{
+    display:flex;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.card{
+    flex:1;
+    background:#3498db;
+    color:white;
+    padding:20px;
+    border-radius:12px;
+    text-align:center;
+}
+
+.card h2{
+    margin-top:10px;
+}
+
+.section{
+    margin-top:25px;
+}
+
+.section h2{
+    color:#34495e;
+    margin-bottom:15px;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:12px;
+    margin:8px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    background:#27ae60;
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#219150;
+}
+
+.record{
+    background:#f8f9fa;
+    border-left:5px solid #3498db;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+}
+
+.leave-card{
+    border-left:5px solid #e67e22;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🏠 Smart Hostel Management System</h1>
+
+<div class="dashboard">
+
+<div class="card">
+<h3>Total Complaints</h3>
+<h2 id="complaintCount">0</h2>
+</div>
+
+<div class="card">
+<h3>Total Leave Requests</h3>
+<h2 id="leaveCount">0</h2>
+</div>
+
+</div>
+
+<div class="section">
+
+<h2>📝 Lodge Complaint</h2>
+
+<input type="text" id="studentName" placeholder="Student Name">
+
+<input type="text" id="roomNo" placeholder="Room Number">
+
+<textarea id="complaintText"
+placeholder="Enter Complaint"></textarea>
+
+<button onclick="addComplaint()">
+Submit Complaint
+</button>
+
+<div id="complaintList"></div>
+
+</div>
+
+<div class="section">
+
+<h2>📄 Leave Request</h2>
+
+<input type="text" id="leaveName"
+placeholder="Student Name">
+
+<input type="text" id="leaveRoom"
+placeholder="Room Number">
+
+<textarea id="leaveReason"
+placeholder="Reason for Leave"></textarea>
+
+<button onclick="addLeave()">
+Submit Leave Request
+</button>
+
+<div id="leaveList"></div>
+
+</div>
+
+</div>
+
+<script>
+
+let complaints =
+JSON.parse(localStorage.getItem("complaints")) || [];
+
+let leaves =
+JSON.parse(localStorage.getItem("leaves")) || [];
+
+function saveData(){
+
+localStorage.setItem(
+"complaints",
+JSON.stringify(complaints)
+);
+
+localStorage.setItem(
+"leaves",
+JSON.stringify(leaves)
+);
+
+}
+
+function updateDashboard(){
+
+document.getElementById("complaintCount")
+.innerText = complaints.length;
+
+document.getElementById("leaveCount")
+.innerText = leaves.length;
+
+}
+
+function addComplaint(){
+
+let name =
+document.getElementById("studentName").value;
+
+let room =
+document.getElementById("roomNo").value;
+
+let text =
+document.getElementById("complaintText").value;
+
+if(name==="" || room==="" || text===""){
+alert("Fill all fields");
+return;
+}
+
+complaints.push({
+name,
+room,
+text
+});
+
+saveData();
+displayComplaints();
+updateDashboard();
+
+document.getElementById("studentName").value="";
+document.getElementById("roomNo").value="";
+document.getElementById("complaintText").value="";
+}
+
+function displayComplaints(){
+
+let list =
+document.getElementById("complaintList");
+
+list.innerHTML="";
+
+complaints.forEach(c=>{
+
+list.innerHTML += `
+<div class="record">
+<b>${c.name}</b><br>
+Room: ${c.room}<br>
+Complaint: ${c.text}
+</div>
+`;
+
+});
+
+}
+
+function addLeave(){
+
+let name =
+document.getElementById("leaveName").value;
+
+let room =
+document.getElementById("leaveRoom").value;
+
+let reason =
+document.getElementById("leaveReason").value;
+
+if(name==="" || room==="" || reason===""){
+alert("Fill all fields");
+return;
+}
+
+leaves.push({
+name,
+room,
+reason
+});
+
+saveData();
+displayLeaves();
+updateDashboard();
+
+document.getElementById("leaveName").value="";
+document.getElementById("leaveRoom").value="";
+document.getElementById("leaveReason").value="";
+}
+
+function displayLeaves(){
+
+let list =
+document.getElementById("leaveList");
+
+list.innerHTML="";
+
+leaves.forEach(l=>{
+
+list.innerHTML += `
+<div class="record leave-card">
+<b>${l.name}</b><br>
+Room: ${l.room}<br>
+Reason: ${l.reason}
+</div>
+`;
+
+});
+
+}
+
+displayComplaints();
+displayLeaves();
+updateDashboard();
+
+</script>
+
+</body>
+</html>
